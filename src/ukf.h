@@ -1,6 +1,7 @@
 #ifndef UKF_H
 #define UKF_H
 
+#include <fstream>
 #include "Eigen/Dense"
 #include "measurement_package.h"
 
@@ -95,6 +96,29 @@ class UKF {
 
   // Sigma point spreading parameter
   double lambda_;
+
+  // the current NIS for radar
+  double NIS_radar_;
+
+  // the current NIS for laser
+  double NIS_laser_;
+
+  // measurement noise covariance matrix
+  Eigen::MatrixXd R_laser_;
+
+  // // measurement matrix
+  Eigen::MatrixXd H_laser_;
+
+  // measurement noise covariance matrix
+  Eigen::MatrixXd R_radar_;
+
+private:
+    void GenerateSigmaPoints(Eigen::MatrixXd* Xsig_out);
+    Eigen::MatrixXd SigmaPointPrediction(Eigen::MatrixXd& Xsig_aug, double delta_t);
+    void PredictMeanAndCovariance(Eigen::VectorXd* x_pred,
+                                  Eigen::MatrixXd* P_pred);
+    void PredictRadarMeasurement(Eigen::VectorXd* z_out,
+                                 Eigen::MatrixXd* S_out);
 };
 
 #endif  // UKF_H
